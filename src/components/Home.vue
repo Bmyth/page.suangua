@@ -21,85 +21,85 @@
 
     <section v-show="showResult" class="sec-result">
       <div class="row-top">
-        <table>
-          <tr>
-            <td>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn dark v-on="on">金</v-btn>
-                </template>
-                <div>
-                  <p>{{xText('M', 'sw')}}</p>
-                  <p>{{xText('M', 'ws')}}</p>
-                  <p>{{xText('M', 'kw')}}</p>
-                  <p>{{xText('M', 'wk')}}</p>
-                </div>
-              </v-tooltip>
-            </td>
-            <td>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn dark v-on="on">木</v-btn>
-                </template>
-                <div>
-                  <p>{{xText('Wo', 'sw')}}</p>
-                  <p>{{xText('Wo', 'ws')}}</p>
-                  <p>{{xText('Wo', 'kw')}}</p>
-                  <p>{{xText('Wo', 'wk')}}</p>
-                </div>
-              </v-tooltip>
-            </td>
-            <td>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn dark v-on="on">水</v-btn>
-                </template>
-                <div>
-                  <p>{{xText('W', 'sw')}}</p>
-                  <p>{{xText('W', 'ws')}}</p>
-                  <p>{{xText('W', 'kw')}}</p>
-                  <p>{{xText('W', 'wk')}}</p>
-                </div>
-              </v-tooltip>
-            </td>
-            <td>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn dark v-on="on">火</v-btn>
-                </template>
-                <div>
-                  <p>{{xText('F', 'sw')}}</p>
-                  <p>{{xText('F', 'ws')}}</p>
-                  <p>{{xText('F', 'kw')}}</p>
-                  <p>{{xText('F', 'wk')}}</p>
-                </div>
-              </v-tooltip>
-            </td>
-            <td>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-btn dark v-on="on">土</v-btn>
-                </template>
-                <div>
-                  <p>{{xText('E', 'sw')}}</p>
-                  <p>{{xText('E', 'ws')}}</p>
-                  <p>{{xText('E', 'kw')}}</p>
-                  <p>{{xText('E', 'wk')}}</p>
-                </div>
-              </v-tooltip>
-            </td>
-          </tr>
-        </table>
+        <div class="ele">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn dark v-on="on">金</v-btn>
+            </template>
+            <div>
+              <p>{{xText('M', 'sw')}}</p>
+              <p>{{xText('M', 'ws')}}</p>
+              <p>{{xText('M', 'kw')}}</p>
+              <p>{{xText('M', 'wk')}}</p>
+            </div>
+          </v-tooltip>
+        </div>
+          
+        <div class="ele">
+         <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn dark v-on="on">木</v-btn>
+            </template>
+            <div>
+              <p>{{xText('Wo', 'sw')}}</p>
+              <p>{{xText('Wo', 'ws')}}</p>
+              <p>{{xText('Wo', 'kw')}}</p>
+              <p>{{xText('Wo', 'wk')}}</p>
+            </div>
+          </v-tooltip>
+        </div>
+              
+        <div class="ele">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn dark v-on="on">水</v-btn>
+            </template>
+            <div>
+              <p>{{xText('W', 'sw')}}</p>
+              <p>{{xText('W', 'ws')}}</p>
+              <p>{{xText('W', 'kw')}}</p>
+              <p>{{xText('W', 'wk')}}</p>
+            </div>
+          </v-tooltip>
+        </div>
+ 
+        <div class="ele">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn dark v-on="on">火</v-btn>
+            </template>
+            <div>
+              <p>{{xText('F', 'sw')}}</p>
+              <p>{{xText('F', 'ws')}}</p>
+              <p>{{xText('F', 'kw')}}</p>
+              <p>{{xText('F', 'wk')}}</p>
+            </div>
+          </v-tooltip>
+        </div>
+          
+        <div class="ele">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn dark v-on="on">土</v-btn>
+            </template>
+            <div>
+              <p>{{xText('E', 'sw')}}</p>
+              <p>{{xText('E', 'ws')}}</p>
+              <p>{{xText('E', 'kw')}}</p>
+              <p>{{xText('E', 'wk')}}</p>
+            </div>
+          </v-tooltip>
+        </div>
       </div>
       <div class="row-mid">
         <div class="column">
-          <div class="g-grid grid-0" :class="gColorClass(baseG[0])">
+          <div class="g-grid grid-up" :class="gColorClass(baseG[0])">
             <p class="name">{{gName(baseG[0])}}</p>
             <div class="img-box">
               <img :src="gImg(baseG[0])">
             </div>
           </div>
-          <div class="g-grid grid-3" :class="gColorClass(baseG[1])">
+          <div class="g-grid grid-down" :class="gColorClass(baseG[1])">
             <p class="name">{{gName(baseG[1])}}</p>
             <div class="img-box">
               <img :src="gImg(baseG[1])">
@@ -108,13 +108,13 @@
         </div>
 
          <div class="column">
-          <div class="g-grid grid-1" :class="gColorClass(nextG[0])">
+          <div class="g-grid grid-up" :class="gColorClass(nextG[0])">
             <p class="name">{{gName(nextG[0])}}</p>
             <div class="img-box">
               <img :src="gImg(nextG[0])">
             </div>
           </div>
-          <div class="g-grid grid-4" :class="gColorClass(nextG[1])">
+          <div class="g-grid grid-down" :class="gColorClass(nextG[1])">
             <p class="name">{{gName(nextG[1])}}</p>
             <div class="img-box">
               <img :src="gImg(nextG[1])">
@@ -123,13 +123,13 @@
         </div>
 
          <div class="column">
-          <div class="g-grid grid-2" :class="gColorClass(futureG[0])">
+          <div class="g-grid grid-up" :class="gColorClass(futureG[0])">
             <p class="name">{{gName(futureG[0])}}</p>
             <div class="img-box">
               <img :src="gImg(futureG[0])">
             </div>
           </div>
-          <div class="g-grid grid-5" :class="gColorClass(futureG[1])">
+          <div class="g-grid grid-down" :class="gColorClass(futureG[1])">
             <p class="name">{{gName(futureG[1])}}</p>
             <div class="img-box">
               <img :src="gImg(futureG[1])">
@@ -139,40 +139,36 @@
         </div>
       </div>
       <div class="row-bot">
-        <table>
-          <tr>
-            <td>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn dark v-on="on">本 ({{gWord(baseG)}})</v-btn>
-                </template>
-                <div>
-                  <p>{{gWordMore(baseG)}}</p>
-                </div>
-              </v-tooltip>
-            </td>
-            <td>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn dark v-on="on">互 ({{gWord(nextG)}})</v-btn>
-                </template>
-                <div>
-                  <p>{{gWordMore(nextG)}}</p>
-                </div>
-              </v-tooltip>
-            </td>
-            <td>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn dark v-on="on">变 ({{gWord(futureG)}})</v-btn>
-                </template>
-                <div>
-                  <p>{{gWordMore(futureG)}}</p>
-                </div>
-              </v-tooltip>
-            </td>
-          </tr>
-        </table>
+        <div class="ele">
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn dark v-on="on">本 ({{gWord(baseG)}})</v-btn>
+            </template>
+            <div>
+              <p>{{gWordMore(baseG)}}</p>
+            </div>
+          </v-tooltip>
+        </div>
+        <div class="ele">
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn dark v-on="on">互 ({{gWord(nextG)}})</v-btn>
+            </template>
+            <div>
+              <p>{{gWordMore(nextG)}}</p>
+            </div>
+          </v-tooltip>
+        </div>    
+        <div class="ele">
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn dark v-on="on">变 ({{gWord(futureG)}})</v-btn>
+            </template>
+            <div>
+              <p>{{gWordMore(futureG)}}</p>
+            </div>
+          </v-tooltip>
+        </div>
       </div>
     </section>
   </div>
@@ -411,21 +407,25 @@ export default {
     overflow: hidden;
     background: #fff;
     height: 100%;
-    /*opacity: 0;*/
-    .row-top{
+    .row-top, .row-bot{
       background: #333;
-      height: 10%;
       width: 100%;
+      position: absolute;
+      z-index: 2;
+    }
+    .row-top{
+      top: 0;
+      left: 0;
+    }
+    .row-bot{
+      position: absolute;
+      bottom: 0;
+      left: 0;
     }
     .row-mid{
       background: #fff;
-      height: 78%;
       width: 100%;
-    }
-    .row-bot{
-      background: #333;
-      height: 10%;
-      width: 100%;
+      height: 100%;
     }
     .column{
       float: left;
@@ -442,22 +442,38 @@ export default {
     .img-box{
       position: absolute;
       width: 100%;
-      height: 50%;
+      height: 30%;
       left: 0;
-      top: 25%;
       text-align: center;
     }
     .g-grid img{
-        max-height: 100%;
+        width: 100%;
         display: inline-block;
     }
     .g-grid .name{
       position: absolute;
-      top: 0;
       left: 0;
       font-size: 20px;
       padding: 1px 5px;
       color: #444;
+      text-align: center;
+      width: 100%;
+    }
+    .grid-up{
+      .img-box{
+        bottom: 0px;
+      }
+      .name{
+        top: 40px;
+      }
+    }
+    .grid-down{
+      .img-box{
+        top: 0px;
+      }
+      .name{
+        bottom: 40px;
+      }
     }
     .g-grid.c-green{
       background: rgba(96, 204, 41, 0.5);
@@ -475,37 +491,19 @@ export default {
       background: rgba(206, 138, 50, 0.5);
     }
     .row-top{
-      table{
-        width: 100%;
-        height: 100%;
-      }
-      tr{
-        width: 100%;
-        height: 100%;
-      }
-      td{
-        height: 100%;
+      overflow: hidden;
+      .ele{
         width: 20%;
-        color: #fff;
-        vertical-align: middle;
-        font-size: 18px;
+        float: left;
+        text-align: center;
       }
     }
     .row-bot{
-      table{
-        width: 100%;
-        height: 100%;
-      }
-      tr{
-        width: 100%;
-        height: 100%;
-      }
-      td{
-        height: 100%;
-        width: 33.33333%;
-        color: #fff;
-        vertical-align: middle;
-        font-size: 18px;
+      overflow: hidden;
+      .ele{
+        width: 33.3333%;
+        float: left;
+        text-align: center;
       }
     }
     .row-top, .row-bot{
@@ -515,6 +513,9 @@ export default {
         background: transparent;
         width: 100%;
         font-size: 18px;
+        .v-btn__content{
+          text-align: center;
+        }
       }
       /deep/ button:not, button:hover{
         background: transparent;
