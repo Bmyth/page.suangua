@@ -293,7 +293,7 @@ export default {
       }
     },
     gImg(n){
-      return "/static/img/g" + n + ".jpg"
+      return "./static/img/g" + n + ".jpg"
     },
     gWord(g){
       if(g[0] && g[1]){
