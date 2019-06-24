@@ -95,45 +95,33 @@
         <div class="column">
           <div class="g-grid grid-up" :class="gColorClass(baseG[0])">
             <p class="name">{{gName(baseG[0])}}</p>
-            <div class="img-box">
-              <img :src="gImg(baseG[0])">
-            </div>
+            <img :src="gImg(baseG[0])">
           </div>
           <div class="g-grid grid-down" :class="gColorClass(baseG[1])">
             <p class="name">{{gName(baseG[1])}}</p>
-            <div class="img-box">
-              <img :src="gImg(baseG[1])">
-            </div>
+            <img :src="gImg(baseG[1])">
           </div>
         </div>
 
          <div class="column">
           <div class="g-grid grid-up" :class="gColorClass(nextG[0])">
             <p class="name">{{gName(nextG[0])}}</p>
-            <div class="img-box">
-              <img :src="gImg(nextG[0])">
-            </div>
+            <img :src="gImg(nextG[0])">
           </div>
           <div class="g-grid grid-down" :class="gColorClass(nextG[1])">
             <p class="name">{{gName(nextG[1])}}</p>
-            <div class="img-box">
-              <img :src="gImg(nextG[1])">
-            </div>
+            <img :src="gImg(nextG[1])">
           </div>
         </div>
 
          <div class="column">
           <div class="g-grid grid-up" :class="gColorClass(futureG[0])">
             <p class="name">{{gName(futureG[0])}}</p>
-            <div class="img-box">
-              <img :src="gImg(futureG[0])">
-            </div>
+            <img :src="gImg(futureG[0])">
           </div>
           <div class="g-grid grid-down" :class="gColorClass(futureG[1])">
             <p class="name">{{gName(futureG[1])}}</p>
-            <div class="img-box">
-              <img :src="gImg(futureG[1])">
-            </div>
+            <img :src="gImg(futureG[1])">
           </div>
 
         </div>
@@ -334,6 +322,11 @@ export default {
         }
       }
     }
+  },
+  mounted() {
+    this.$http.get('https://www.sojson.com/open/api/lunar/json.shtml').then((res) =>{
+      console.log(res)
+    })
   }
 }
 </script>
@@ -439,15 +432,10 @@ export default {
       border: 1px dashed #aaa;
       box-sizing: border-box;
     }
-    .img-box{
-      position: absolute;
-      width: 100%;
-      height: 30%;
-      left: 0;
-      text-align: center;
-    }
     .g-grid img{
-        width: 100%;
+        position: absolute;
+        width: 69%;
+        left: 15.5%;
         display: inline-block;
     }
     .g-grid .name{
@@ -458,21 +446,22 @@ export default {
       color: #444;
       text-align: center;
       width: 100%;
+      margin: 0;
     }
     .grid-up{
-      .img-box{
+      img{
         bottom: 0px;
       }
       .name{
-        top: 40px;
+        top: 50px;
       }
     }
     .grid-down{
-      .img-box{
+      img{
         top: 0px;
       }
       .name{
-        bottom: 40px;
+        bottom: 50px;
       }
     }
     .g-grid.c-green{

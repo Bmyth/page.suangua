@@ -9,8 +9,10 @@ Vue.config.productionTip = false
 import Vuetify from 'vuetify'
 import './style/reset.css'
 import 'vuetify/dist/vuetify.min.css' 
+import VueResource from 'vue-resource'
 
 Vue.use(Vuetify)
+Vue.use(VueResource);
 
 /* eslint-disable no-new */
 new Vue({
