@@ -527,6 +527,7 @@ export default {
       text-align: center;
       width: 100%;
       margin: 0;
+      z-index: 2;
     }
     .grid-up{
       img{
