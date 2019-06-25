@@ -1,95 +1,39 @@
 <template>
  <div class="v-container">
+    <section class="info" v-show="!showResult">
+      <p v-show="lunarYear">{{lunarYear}}年</p>
+      <p>{{lunarCalendar}}</p>
+      <p>{{solarTerms}}</p> 
+      <p>{{getHourNum().name}}时({{getHourNum().num}})</p> 
+    </section>
+
     <section v-show="!showResult" class="sec-start">
-      <div class="input-box first">
-        <span>上</span>
-        <input v-model="upNum" type="number"></input>
+      <div class="step-1">
+        <div class="input-box box-up" :class="activeNumUp">
+          <span>上</span>
+          <input v-model="upNum" type="number"></input>
+        </div>
+        <div class="input-box box-down" :class="activeNumDown">
+          <span>下</span>
+          <input v-model="downNum" type="number"></input>
+        </div>
+        <div class="input-box box-change" :class="activeNumChange">
+          <span>动</span>
+          <input v-model="changeNum" type="number"></input>
+        </div>
       </div>
-      <div class="input-box">
-        <span>下</span>
-        <input v-model="downNum" type="number"></input>
-      </div>
-      <div class="input-box">
-        <span>动</span>
-        <input v-model="changeNum" type="number"></input>
-      </div>
-      <div class="btn">
-        <p class="x" @click="clear">消</p>
+      <div class="step-2">
         <p class="q" @click="start">起</p>
+        <p class="x" @click="clear">消</p>
       </div>
     </section>
 
     <section v-show="showResult" class="sec-result">
       <div class="row-top">
-        <div class="ele">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn dark v-on="on">金</v-btn>
-            </template>
-            <div>
-              <p>{{xText('M', 'sw')}}</p>
-              <p>{{xText('M', 'ws')}}</p>
-              <p>{{xText('M', 'kw')}}</p>
-              <p>{{xText('M', 'wk')}}</p>
-            </div>
-          </v-tooltip>
-        </div>
-          
-        <div class="ele">
-         <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn dark v-on="on">木</v-btn>
-            </template>
-            <div>
-              <p>{{xText('Wo', 'sw')}}</p>
-              <p>{{xText('Wo', 'ws')}}</p>
-              <p>{{xText('Wo', 'kw')}}</p>
-              <p>{{xText('Wo', 'wk')}}</p>
-            </div>
-          </v-tooltip>
-        </div>
-              
-        <div class="ele">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn dark v-on="on">水</v-btn>
-            </template>
-            <div>
-              <p>{{xText('W', 'sw')}}</p>
-              <p>{{xText('W', 'ws')}}</p>
-              <p>{{xText('W', 'kw')}}</p>
-              <p>{{xText('W', 'wk')}}</p>
-            </div>
-          </v-tooltip>
-        </div>
- 
-        <div class="ele">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn dark v-on="on">火</v-btn>
-            </template>
-            <div>
-              <p>{{xText('F', 'sw')}}</p>
-              <p>{{xText('F', 'ws')}}</p>
-              <p>{{xText('F', 'kw')}}</p>
-              <p>{{xText('F', 'wk')}}</p>
-            </div>
-          </v-tooltip>
-        </div>
-          
-        <div class="ele">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn dark v-on="on">土</v-btn>
-            </template>
-            <div>
-              <p>{{xText('E', 'sw')}}</p>
-              <p>{{xText('E', 'ws')}}</p>
-              <p>{{xText('E', 'kw')}}</p>
-              <p>{{xText('E', 'wk')}}</p>
-            </div>
-          </v-tooltip>
-        </div>
+        <span v-show="lunarYear">{{lunarYear}}年</span>
+        <span>{{lunarCalendar}}</span>
+        <span>{{solarTerms}}</span> 
+        <span>{{getHourNum().name}}时</span> 
       </div>
       <div class="row-mid">
         <div class="column">
@@ -128,37 +72,36 @@
       </div>
       <div class="row-bot">
         <div class="ele">
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn dark v-on="on">本 ({{gWord(baseG)}})</v-btn>
-            </template>
-            <div>
-              <p>{{gWordMore(baseG)}}</p>
-            </div>
-          </v-tooltip>
+          <span>{{gWord(baseG)}}</span>
         </div>
         <div class="ele">
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn dark v-on="on">互 ({{gWord(nextG)}})</v-btn>
-            </template>
-            <div>
-              <p>{{gWordMore(nextG)}}</p>
-            </div>
-          </v-tooltip>
+          <span>{{gWord(nextG)}}</span>
         </div>    
         <div class="ele">
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn dark v-on="on">变 ({{gWord(futureG)}})</v-btn>
-            </template>
-            <div>
-              <p>{{gWordMore(futureG)}}</p>
-            </div>
-          </v-tooltip>
+          <span>{{gWord(futureG)}}</span>
         </div>
       </div>
     </section>
+
+    <v-dialog v-model="showElementDlg" max-width="290" dark>
+      <v-card>
+        <v-card-text>
+          <p>{{xText(selectElement, 'sw')}}</p>
+          <p>{{xText(selectElement, 'ws')}}</p>
+          <p>{{xText(selectElement, 'kw')}}</p>
+          <p>{{xText(selectElement, 'wk')}}</p>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="showGuaDlg" max-width="290" dark>
+      <v-card>
+        <v-card-text>
+          <p>{{gWord(selectGua)}}</p>
+          <p>{{gWordMore(selectGua)}}</p>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -169,9 +112,16 @@ export default {
   name: 'Home',
   data () {
     return {
-      upNum: null,
-      downNum: null,
-      changeNum: null,
+      lunarYear: '',
+      solarTerms: '',
+      lunarCalendar: '',
+      upNum: '',
+      downNum: '',
+      changeNum: '',
+      showElementDlg: false,
+      selectElement: 'E',
+      showGuaDlg: false,
+      selectGua: '',
       G2Y: [
         {g:1, y: [9,9,9]},
         {g:2, y: [6,9,9]},
@@ -199,6 +149,33 @@ export default {
         {key: 'F', name: '火', sw: 'Wo', kw: 'W', ws: 'E', wk: 'M'},
         {key: 'E', name: '土', sw: 'F', kw: 'Wo', ws: 'M', wk: 'W'}
       ],
+      H: [
+        { h: 0, name: '子', num: 1},
+        { h: 1, name: '丑', num: 2},
+        { h: 2, name: '丑', num: 2},
+        { h: 3, name: '寅', num: 3},
+        { h: 4, name: '寅', num: 3},
+        { h: 5, name: '卯', num: 4},
+        { h: 6, name: '卯', num: 4},
+        { h: 7, name: '辰', num: 5},
+        { h: 8, name: '辰', num: 5},
+        { h: 9, name: '巳', num: 6},
+        { h: 10, name: '巳', num: 6},
+        { h: 11, name: '午', num: 7},
+        { h: 12, name: '午', num: 7},
+        { h: 13, name: '未', num: 8},
+        { h: 14, name: '未', num: 8},
+        { h: 15, name: '申', num: 9},
+        { h: 16, name: '申', num: 9},
+        { h: 17, name: '酉', num: 10},
+        { h: 18, name: '酉', num: 10},
+        { h: 19, name: '戌', num: 11},
+        { h: 20, name: '戌', num: 11},
+        { h: 21, name: '亥', num: 12},
+        { h: 22, name: '亥', num: 12},
+        { h: 23, name: '子', num: 1},
+        { h: 24, name: '子', num: 1},
+      ],
       baseG: [],
       nextG: [],
       futureG: [],
@@ -206,15 +183,24 @@ export default {
       showResult: false
     }
   },
+  computed: {
+    activeNumUp(){
+      return this.upNum != '' ? 'active' : ''
+    },
+    activeNumDown(){
+      return this.downNum != '' ? 'active' : ''
+    },
+    activeNumChange(){
+      return this.changeNum != '' ? 'active' : ''
+    }
+  },
   methods: {
     start(){
-      if(this.upNum != null && this.downNum != null){
-        $('.sec-start').animate({width: '7px'}, 600, ()=>{
-          $('.sec-start').addClass('bright');
-          this.calculate();
-        })
-        $('.sec-start div').animate({'opacity': 0})
-      }
+      $('.sec-start').animate({width: '7px'}, 600, ()=>{
+        $('.sec-start').addClass('bright');
+        this.calculate();
+      })
+      $('.sec-start div').animate({'opacity': 0})
     },
     calculate(){
       this.upNum = this.upNum % 8 || 8;
@@ -228,12 +214,16 @@ export default {
       this.futureG = this.getGFromY(this.futureG);
       this.body = this.changeNum > 3 ? this.baseG[0] : this.baseG[1];
       this.showResult = true;
-      $('.sec-result').fadeIn('slow');
+      $('.sec-result').fadeIn(3000);
       $('.sec-start div').css({'opacity': 1});
       $('.sec-start').css({width: '120px'});
     },
     clear(){
-      this.upNum = this.downNum = this.changeNum = null;
+      this.upNum = this.downNum = this.changeNum = '';
+      $('.step-1 .input-box span').css('left', '0')
+      $('.step-2').fadeOut(800 ,function(){
+        $('.step-1').fadeIn(800).css('display', 'flex');
+      });
     },
     getGFromY(Y){
       let upY = [Y[0], Y[1], Y[2]]
@@ -321,11 +311,62 @@ export default {
           return oName + '克' + iName;
         }
       }
+    },
+    getDateStr(){
+      let date = new Date();
+      let str = date.getFullYear();
+      let month = date.getMonth() + 1;
+      month = month >= 10 ? '' + month : '0' + month; 
+      str += month;
+      let day = date.getDate();
+      day = day >= 10 ? '' + day : '0' + day;
+      return str + day;
+    },
+    getHourNum(){
+      let hour = new Date().getHours();
+      let h = this.H.find((i) => {return i.h == hour})
+      return h
+    },
+    checkElement(n){
+      this.selectElement = this.G[n-1].x;
+      this.showElementDlg = true;
+    },
+    checkGua(g){
+      this.selectGua = g;
+      this.showGuaDlg = true;
     }
   },
   mounted() {
-    this.$http.get('https://www.sojson.com/open/api/lunar/json.shtml').then((res) =>{
-      console.log(res)
+    let _this = this;
+    this.$http.get('https://www.mxnzp.com/api/holiday/single/' + this.getDateStr()).then((res) =>{
+      if(res.data.data){
+        let data = res.data.data;
+        this.solarTerms = data.solarTerms;
+        this.lunarYear = data.yearTips;
+        this.lunarCalendar = data.lunarCalendar;
+      }
+    })
+
+    $('.step-1 .input-box').click(function(){
+      $(this).find('input').focus();
+    })
+
+    $('.step-1 .input-box input').focus(function(){
+      $(this).closest('.input-box').find('span').animate({'left':'-100%', opacity: 0});
+    })
+
+    $('.step-1 .input-box input').blur(function(){
+      if($(this).val() != ''){
+        $(this).closest('.input-box').find('span').animate({opacity: 1})
+      }else{
+        $(this).closest('.input-box').find('span').animate({'left':'0', opacity: 1});
+      }
+
+      if( _this.upNum != '' && _this.downNum != '' && _this.changeNum != ''){
+        $('.step-1').fadeOut(800 ,function(){
+          $('.step-2').fadeIn(800).css('display', 'flex');
+        });
+      }
     })
   }
 }
@@ -344,33 +385,53 @@ export default {
     &.bright{
       background: #fff;
     }
+    .step-1, .step-2{
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .step-2{
+      display: none;
+    }
     .input-box{
-      width: 85%;
-      margin: 10px auto;
+      width: 100%;
+      margin: 15px 0;
+      color: #aaa;
+      position: relative;
       span{
         font-size: 14px;
         color: #888;
+        display: block;
+        width: 100%;
+        position: absolute;
+        top: 14px;
+        text-align: center;
       }
     }
-    .input-box.first{
-      padding-top: 120px;
-      margin-top: 0;
+    .input-box.active{
+      span{
+        text-align: right;
+        left: -100%;
+        color: #fff;
+        padding: 4px 10px;
+      }
     }
     input{
       display: inline-block;
       width: 100%;
-      font-size: 24px;
-      color: #777;
+      font-size: 32px;
+      color: #888;
       border: none;
       background: transparent;
-      border-bottom: 1px solid #acacac;
       outline: none;
       padding: 10px 0;
       text-align: center;
+      border-bottom: 1px solid transparent;
     }
     input:focus{
-      border-bottom: 1px solid #666;
-      color: #333;
+      border-bottom: 1px solid #aaa;
+      color: #666;
     }
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
@@ -379,21 +440,40 @@ export default {
     input[type="number"]{
         -moz-appearance: textfield;
     }
-    .btn{
-      width: 80%;
-      margin: 10px auto;
+    .step-2{
       p{
-        display: inline-block;
-        width: 45%;
-        cursor: pointer;
+        width: 100%;
         margin: 0;
-        padding: 10px 0;
-        font-size: 16px;
-        color: #777;
+        color: #666;
+        font-size: 24px;
+        position: relative;
+        padding: 20px;
+        cursor: pointer;
       }
-      p:hover{
+      p.q{
+        border-bottom: 1px solid #aaa;
+      }
+      p.q:hover{
         color: #333;
       }
+      p.x:hover{
+        color: #aaa;
+      }
+      p{
+
+      }
+    }
+  }
+  section.info{
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      text-align: right;
+      border: 1px solid #ccc;
+      color: #ccc;
+      padding: 6px 8px;
+    p{
+      margin: 4px;
     }
   }
   section.sec-result{
@@ -481,10 +561,10 @@ export default {
     }
     .row-top{
       overflow: hidden;
-      .ele{
-        width: 20%;
-        float: left;
-        text-align: center;
+      span{
+        display: inline-block;
+        color: #fff;
+        padding: 5px 10px;
       }
     }
     .row-bot{
@@ -493,21 +573,11 @@ export default {
         width: 33.3333%;
         float: left;
         text-align: center;
-      }
-    }
-    .row-top, .row-bot{
-      /deep/ button{
-        margin: 0;
-        padding: 0;
-        background: transparent;
-        width: 100%;
-        font-size: 18px;
-        .v-btn__content{
-          text-align: center;
+        span{
+          display: inline-block;
+          color: #fff;
+          padding: 5px 10px;
         }
-      }
-      /deep/ button:not, button:hover{
-        background: transparent;
       }
     }
   }
