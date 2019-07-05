@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <router-view/>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -20,6 +20,5 @@ html, body{
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   height: 100%;
-  background: #333;
 }
 </style>

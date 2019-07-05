@@ -1,48 +1,44 @@
 <template>
  <div class="v-container">
-    <section class="info" v-show="!showResult">
-      <p v-show="lunarYear">{{lunarYear}}年</p>
-      <p>{{lunarCalendar}}</p>
-      <p>{{solarTerms}}</p> 
-      <p>{{getHourNum().name}}时({{getHourNum().num}})</p> 
-    </section>
+    <div class="side">
+      <div class="plum"></div>
+      <div class="info-box">
+        <p v-show="lunarYear">{{lunarYear}}年</p>
+        <p>{{lunarCalendar}}</p>
+        <p>{{solarTerms}}</p> 
+        <p>{{getHourNum().name}}时({{getHourNum().num}})</p> 
+      </div>
+    </div>
+
+
 
     <section v-show="!showResult" class="sec-start">
       <div class="step-1">
         <div class="input-box box-up" :class="activeNumUp">
-          <span>上</span>
+          <span>上卦</span>
           <input v-model="upNum" type="number"></input>
         </div>
         <div class="input-box box-down" :class="activeNumDown">
-          <span>下</span>
+          <span>下卦</span>
           <input v-model="downNum" type="number"></input>
         </div>
         <div class="input-box box-change" :class="activeNumChange">
-          <span>动</span>
+          <span>动爻</span>
           <input v-model="changeNum" type="number"></input>
         </div>
-      </div>
-      <div class="step-2">
-        <p class="q" @click="start">起</p>
-        <p class="x" @click="clear">消</p>
+        <p class="q" @click="start" :class="numFilled">起</p>
       </div>
     </section>
 
     <section v-show="showResult" class="sec-result">
-      <div class="row-top">
-        <span v-show="lunarYear">{{lunarYear}}年</span>
-        <span>{{lunarCalendar}}</span>
-        <span>{{solarTerms}}</span> 
-        <span>{{getHourNum().name}}时</span> 
-      </div>
       <div class="row-mid">
         <div class="column">
           <div class="g-grid grid-up" :class="gColorClass(baseG[0])">
-            <p class="name">{{gName(baseG[0])}}</p>
+            <p class="name">{{gName(baseG[0])}}<span v-show="bodyUp" class="body-mark"></span></p>
             <img :src="gImg(baseG[0])">
           </div>
           <div class="g-grid grid-down" :class="gColorClass(baseG[1])">
-            <p class="name">{{gName(baseG[1])}}</p>
+            <p class="name">{{gName(baseG[1])}}<span v-show="!bodyUp" class="body-mark"></span></p>
             <img :src="gImg(baseG[1])">
           </div>
         </div>
@@ -72,36 +68,99 @@
       </div>
       <div class="row-bot">
         <div class="ele">
-          <span>{{gWord(baseG)}}</span>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <span dark v-on="on">{{gWord(baseG)}}</span>
+            </template>
+            <span>{{gWordMore(baseG)}}</span>
+          </v-tooltip>
         </div>
         <div class="ele">
-          <span>{{gWord(nextG)}}</span>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <span v-on="on">{{gWord(nextG)}}</span>
+            </template>
+            <span>{{gWordMore(nextG)}}</span>
+          </v-tooltip>
         </div>    
         <div class="ele">
-          <span>{{gWord(futureG)}}</span>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <span dark v-on="on">{{gWord(futureG)}}</span>
+            </template>
+            <span>{{gWordMore(futureG)}}</span>
+          </v-tooltip>
+        </div>
+      </div>
+
+      <div class="row-top">
+        <div class="ele">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <span dark v-on="on">金</span>
+            </template>
+            <div>
+              <p>{{xText('M', 'sw')}}</p>
+              <p>{{xText('M', 'kw')}}</p>
+              <p>{{xText('M', 'ws')}}</p>
+              <p>{{xText('M', 'wk')}}</p>
+            </div>
+          </v-tooltip>
+        </div>
+        <div class="ele">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <span dark v-on="on">木</span>
+            </template>
+            <div>
+              <p>{{xText('Wo', 'sw')}}</p>
+              <p>{{xText('Wo', 'kw')}}</p>
+              <p>{{xText('Wo', 'ws')}}</p>
+              <p>{{xText('Wo', 'wk')}}</p>
+            </div>
+          </v-tooltip>
+        </div>
+        <div class="ele">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <span dark v-on="on">水</span>
+            </template>
+            <div>
+              <p>{{xText('W', 'sw')}}</p>
+              <p>{{xText('W', 'kw')}}</p>
+              <p>{{xText('W', 'ws')}}</p>
+              <p>{{xText('W', 'wk')}}</p>
+            </div>
+          </v-tooltip>
+        </div>
+        <div class="ele">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <span dark v-on="on">火</span>
+            </template>
+            <div>
+              <p>{{xText('F', 'sw')}}</p>
+              <p>{{xText('F', 'kw')}}</p>
+              <p>{{xText('F', 'ws')}}</p>
+              <p>{{xText('F', 'wk')}}</p>
+            </div>
+          </v-tooltip>
+        </div>
+        <div class="ele">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <span dark v-on="on">土</span>
+            </template>
+            <div>
+              <p>{{xText('E', 'sw')}}</p>
+              <p>{{xText('E', 'kw')}}</p>
+              <p>{{xText('E', 'ws')}}</p>
+              <p>{{xText('E', 'wk')}}</p>
+            </div>
+          </v-tooltip>
         </div>
       </div>
     </section>
-
-    <v-dialog v-model="showElementDlg" max-width="290" dark>
-      <v-card>
-        <v-card-text>
-          <p>{{xText(selectElement, 'sw')}}</p>
-          <p>{{xText(selectElement, 'ws')}}</p>
-          <p>{{xText(selectElement, 'kw')}}</p>
-          <p>{{xText(selectElement, 'wk')}}</p>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="showGuaDlg" max-width="290" dark>
-      <v-card>
-        <v-card-text>
-          <p>{{gWord(selectGua)}}</p>
-          <p>{{gWordMore(selectGua)}}</p>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -184,6 +243,9 @@ export default {
     }
   },
   computed: {
+    numFilled(){
+      return (this.upNum != '' && this.downNum != '' && this.changeNum != '') ? 'c-show' : ''
+    },
     activeNumUp(){
       return this.upNum != '' ? 'active' : ''
     },
@@ -192,11 +254,14 @@ export default {
     },
     activeNumChange(){
       return this.changeNum != '' ? 'active' : ''
+    },
+    bodyUp(){
+      return this.changeNum <= 3;
     }
   },
   methods: {
     start(){
-      $('.sec-start').animate({width: '7px'}, 600, ()=>{
+      $('.sec-start').animate({'margin-left': '-100%'}, 1500, ()=>{
         $('.sec-start').addClass('bright');
         this.calculate();
       })
@@ -214,13 +279,11 @@ export default {
       this.futureG = this.getGFromY(this.futureG);
       this.body = this.changeNum > 3 ? this.baseG[0] : this.baseG[1];
       this.showResult = true;
-      $('.sec-result').fadeIn(3000);
-      $('.sec-start div').css({'opacity': 1});
-      $('.sec-start').css({width: '120px'});
+      $('.sec-result').fadeIn(800);
     },
     clear(){
       this.upNum = this.downNum = this.changeNum = '';
-      $('.step-1 .input-box span').css('left', '0')
+      $('.step-1 .input-box span').css({'left':'0', opacity: 1})
       $('.step-2').fadeOut(800 ,function(){
         $('.step-1').fadeIn(800).css('display', 'flex');
       });
@@ -267,7 +330,7 @@ export default {
       }
     },
     gImg(n){
-      return "./static/img/g" + n + ".jpg"
+      return "./static/img/g" + n + ".png"
     },
     gWord(g){
       if(g[0] && g[1]){
@@ -352,20 +415,13 @@ export default {
     })
 
     $('.step-1 .input-box input').focus(function(){
-      $(this).closest('.input-box').find('span').animate({'left':'-100%', opacity: 0});
+      var t = $(this).closest('.input-box').find('span');
+      $(t).animate({'top':'95px'})
     })
 
     $('.step-1 .input-box input').blur(function(){
-      if($(this).val() != ''){
-        $(this).closest('.input-box').find('span').animate({opacity: 1})
-      }else{
-        $(this).closest('.input-box').find('span').animate({'left':'0', opacity: 1});
-      }
-
-      if( _this.upNum != '' && _this.downNum != '' && _this.changeNum != ''){
-        $('.step-1').fadeOut(800 ,function(){
-          $('.step-2').fadeIn(800).css('display', 'flex');
-        });
+      if($(this).val() == ''){
+        $(this).closest('.input-box').find('span').animate({'top':'0'});
       }
     })
   }
@@ -374,31 +430,56 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss" rel="stylesheet/scss">
+  .side{
+    width: 27%;
+    height: 100%;
+    background: #eee;
+    overflow: visible;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    .plum{
+      width: 130%;
+      height: 100%;
+      background-image: url("../assets/plum.png");
+      background-size: contain;
+    }
+    .info-box{
+      position: absolute;
+      left: 15px;
+      bottom: 15px;
+      text-align: left;
+      border: 1px solid #666;
+      color: #777;
+      padding: 6px 8px;
+      p{
+        margin: 3px;
+        font-size: 14px;
+      }
+    }
+  }
   .v-container{
     height: 100%;
   }
   section.sec-start{
+    width: 100%;
     height: 100%;
-    width: 120px;
-    background: #ccc;
-    margin: 0 auto;
-    &.bright{
-      background: #fff;
-    }
-    .step-1, .step-2{
-      height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .step-1{
+      width: 60%;
       display: flex;
-      flex-direction: column;
       justify-content: center;
-    }
-    .step-2{
-      display: none;
+      position: relative;
     }
     .input-box{
-      width: 100%;
+      width: 20%;
       margin: 15px 0;
       color: #aaa;
       position: relative;
+      display: inline-block;
       span{
         font-size: 14px;
         color: #888;
@@ -407,14 +488,6 @@ export default {
         position: absolute;
         top: 14px;
         text-align: center;
-      }
-    }
-    .input-box.active{
-      span{
-        text-align: right;
-        left: -100%;
-        color: #fff;
-        padding: 4px 10px;
       }
     }
     input{
@@ -430,7 +503,7 @@ export default {
       border-bottom: 1px solid transparent;
     }
     input:focus{
-      border-bottom: 1px solid #aaa;
+      border-bottom: 1px solid #ccc;
       color: #666;
     }
     input::-webkit-outer-spin-button,
@@ -440,60 +513,40 @@ export default {
     input[type="number"]{
         -moz-appearance: textfield;
     }
-    .step-2{
-      p{
-        width: 100%;
-        margin: 0;
-        color: #666;
-        font-size: 24px;
-        position: relative;
-        padding: 20px;
-        cursor: pointer;
-      }
-      p.q{
-        border-bottom: 1px solid #aaa;
-      }
-      p.q:hover{
-        color: #333;
-      }
-      p.x:hover{
-        color: #aaa;
-      }
-      p{
-
-      }
+    .q{
+      color: red;
+      font-size: 24px;
+      cursor: pointer;
+      display: inline-block;
+      padding: 25px 0;
+      width: 0;
+      opacity: 0;
+      transition: all .5s;
+      -moz-transition: all .5s;
+      -webkit-transition: all .5s;
+      -o-transition: all .5s;
     }
-  }
-  section.info{
-      position: fixed;
-      right: 18px;
-      top: 18px;
-      text-align: right;
-      border: 1px solid #ccc;
-      color: #ccc;
-      padding: 6px 8px;
-    p{
-      margin: 4px;
+    .q.c-show{
+      width: 10%;
+      opacity: 1;
     }
   }
   section.sec-result{
     overflow: hidden;
-    background: #fff;
     height: 100%;
+    padding-left: 27%;
     .row-top, .row-bot{
       background: #333;
-      width: 100%;
+      width: 73%;
       position: absolute;
-      z-index: 2;
+      z-index: 1;
+      left: 27%;
     }
     .row-top{
       top: 0;
-      left: 0;
     }
     .row-bot{
-      position: absolute;
       bottom: 0;
-      left: 0;
     }
     .row-mid{
       background: #fff;
@@ -509,14 +562,14 @@ export default {
     .g-grid {
       position: relative;
       height: 50%;
-      border: 1px dashed #aaa;
+      border: 1px solid #aaa;
       box-sizing: border-box;
     }
     .g-grid img{
-        position: absolute;
-        width: 69%;
-        left: 15.5%;
-        display: inline-block;
+      position: absolute;
+      width: 30%;
+      left: 35%;
+      display: inline-block;
     }
     .g-grid .name{
       position: absolute;
@@ -528,10 +581,14 @@ export default {
       width: 100%;
       margin: 0;
       z-index: 2;
+      font-weight: bold;
+    }
+    .body-mark{
+      display: none;
     }
     .grid-up{
       img{
-        bottom: 0px;
+        bottom: 20px;
       }
       .name{
         top: 50px;
@@ -539,33 +596,43 @@ export default {
     }
     .grid-down{
       img{
-        top: 0px;
+        top: 20px;
       }
       .name{
         bottom: 50px;
       }
     }
-    .g-grid.c-green{
-      background: rgba(96, 204, 41, 0.5);
+    .g-grid.c-green .name{
+      color: rgb(96, 204, 41);
     }
-    .g-grid.c-white{
-      background: rgba(249, 229, 89, 0.5);
+    .g-grid.c-white .name{
+      color: #fbf309;
     }
-    .g-grid.c-red{
-      background: rgba(243, 62, 62, 0.5);
+    .g-grid.c-red .name{
+      color: rgb(243, 62, 62);
     }
-    .g-grid.c-black{
-      background: rgba(11, 132, 177, 0.5);
+    .g-grid.c-black .name{
+      color: rgb(11, 132, 177);
     }
-    .g-grid.c-yellow{
-      background: rgba(206, 138, 50, 0.5);
+    .g-grid.c-yellow .name{
+      color: rgb(206, 138, 50);
     }
     .row-top{
       overflow: hidden;
-      span{
-        display: inline-block;
-        color: #fff;
-        padding: 5px 10px;
+      height: 24px;
+      line-height: 24px;
+      .ele{
+        width: 20%;
+        float: left;
+        text-align: center;
+        height: 24px;
+        line-height: 24px;
+        span{
+          display: block;
+          color: #fff;
+          /* padding: 5px 10px; */
+
+        }
       }
     }
     .row-bot{
@@ -574,10 +641,13 @@ export default {
         width: 33.3333%;
         float: left;
         text-align: center;
+        height: 24px;
+        line-height: 24px;
         span{
-          display: inline-block;
+          display: block;
           color: #fff;
-          padding: 5px 10px;
+          /* padding: 5px 10px; */
+
         }
       }
     }
