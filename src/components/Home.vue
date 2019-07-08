@@ -1,7 +1,7 @@
 <template>
  <div class="v-container">
     <div class="side">
-      <div class="plum"></div>
+      <div class="plum" :style="{backgroundImage:`url(${plumImg})`}"></div>
       <div class="info-box">
         <p v-show="lunarYear">{{lunarYear}}年</p>
         <p>{{lunarCalendar}}</p>
@@ -239,7 +239,8 @@ export default {
       nextG: [],
       futureG: [],
       body: null,
-      showResult: false
+      showResult: false,
+      plumImg: require("../assets/plum.png")
     }
   },
   computed: {
@@ -330,7 +331,9 @@ export default {
       }
     },
     gImg(n){
-      return "./static/img/g" + n + ".png"
+      if(n){
+        return "./static/img/g" + n + ".png"
+      }
     },
     gWord(g){
       if(g[0] && g[1]){
@@ -442,7 +445,6 @@ export default {
     .plum{
       width: 130%;
       height: 100%;
-      background-image: url("../assets/plum.png");
       background-size: contain;
     }
     .info-box{
