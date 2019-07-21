@@ -1,18 +1,23 @@
 <template>
- <div class="v-container">
+ <div class="canvas" :style="{backgroundImage:`url(${bgImg})`, height: `${canvasHeight()}`, marginTop: `${canvasTop()}`}">
+    <Bird :action="birdAction" @callback="birdCallback"></Bird>
+
     <div class="side">
       <div class="plum" :style="{backgroundImage:`url(${plumImg})`}"></div>
       <div class="info-box">
         <p v-show="lunarYear">{{lunarYear}}年</p>
         <p>{{lunarCalendar}}</p>
         <p>{{solarTerms}}</p> 
-        <p>{{getHourNum().name}}时({{getHourNum().num}})</p> 
+        <p>
+          {{getHourNum().name}}时
+          <span class="hour-points">
+            <i v-for="i in getHourNum().num"></i>
+          </span>
+        </p> 
       </div>
     </div>
 
-
-
-    <section v-show="!showResult" class="sec-start">
+    <section class="sec-start">
       <div class="step-1">
         <div class="input-box box-up" :class="activeNumUp">
           <span>上卦</span>
@@ -40,6 +45,14 @@
           <div class="g-grid grid-down" :class="gColorClass(baseG[1])">
             <p class="name">{{gName(baseG[1])}}<span v-show="!bodyUp" class="body-mark"></span></p>
             <img :src="gImg(baseG[1])">
+            <div class="ele">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <span dark v-on="on">{{gWord(baseG)}}</span>
+                </template>
+                <span>{{gWordMore(baseG)}}</span>
+              </v-tooltip>
+            </div>
           </div>
         </div>
 
@@ -51,6 +64,14 @@
           <div class="g-grid grid-down" :class="gColorClass(nextG[1])">
             <p class="name">{{gName(nextG[1])}}</p>
             <img :src="gImg(nextG[1])">
+            <div class="ele">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <span v-on="on">{{gWord(nextG)}}</span>
+                </template>
+                <span>{{gWordMore(nextG)}}</span>
+              </v-tooltip>
+            </div> 
           </div>
         </div>
 
@@ -62,36 +83,18 @@
           <div class="g-grid grid-down" :class="gColorClass(futureG[1])">
             <p class="name">{{gName(futureG[1])}}</p>
             <img :src="gImg(futureG[1])">
+            <div class="ele">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <span dark v-on="on">{{gWord(futureG)}}</span>
+                </template>
+                <span>{{gWordMore(futureG)}}</span>
+              </v-tooltip>
+            </div>
           </div>
+        </div>
+      </div>
 
-        </div>
-      </div>
-      <div class="row-bot">
-        <div class="ele">
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <span dark v-on="on">{{gWord(baseG)}}</span>
-            </template>
-            <span>{{gWordMore(baseG)}}</span>
-          </v-tooltip>
-        </div>
-        <div class="ele">
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <span v-on="on">{{gWord(nextG)}}</span>
-            </template>
-            <span>{{gWordMore(nextG)}}</span>
-          </v-tooltip>
-        </div>    
-        <div class="ele">
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <span dark v-on="on">{{gWord(futureG)}}</span>
-            </template>
-            <span>{{gWordMore(futureG)}}</span>
-          </v-tooltip>
-        </div>
-      </div>
 
       <div class="row-top">
         <div class="ele">
@@ -167,8 +170,12 @@
 <script>
 import G64 from '../knowledge/gua64.js'
 import $ from 'jquery'
+import Bird from './Bird'
 export default {
   name: 'Home',
+  components: {
+    Bird, Bird
+  },
   data () {
     return {
       lunarYear: '',
@@ -240,7 +247,9 @@ export default {
       futureG: [],
       body: null,
       showResult: false,
-      plumImg: require("../assets/plum.png")
+      plumImg: require("../assets/plum.png"),
+      bgImg: require("../assets/bg-small.png"),
+      birdAction: ''
     }
   },
   computed: {
@@ -261,12 +270,21 @@ export default {
     }
   },
   methods: {
+    canvasHeight(){
+      let h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight; 
+      return h * 0.8 + 'px';
+    },
+    canvasTop(){
+      let h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight; 
+      return h * 0.1 + 'px';
+    },
     start(){
-      $('.sec-start').animate({'margin-left': '-100%'}, 1500, ()=>{
+      this.birdAction = 'flyaway';
+      $('.sec-start').fadeOut(800, ()=>{
         $('.sec-start').addClass('bright');
         this.calculate();
       })
-      $('.sec-start div').animate({'opacity': 0})
+      $('.info-box').fadeOut();
     },
     calculate(){
       this.upNum = this.upNum % 8 || 8;
@@ -279,8 +297,6 @@ export default {
       this.nextG = this.getGFromY(this.nextG);
       this.futureG = this.getGFromY(this.futureG);
       this.body = this.changeNum > 3 ? this.baseG[0] : this.baseG[1];
-      this.showResult = true;
-      $('.sec-result').fadeIn(800);
     },
     clear(){
       this.upNum = this.downNum = this.changeNum = '';
@@ -400,6 +416,25 @@ export default {
     checkGua(g){
       this.selectGua = g;
       this.showGuaDlg = true;
+    },
+    birdCallback(msg){
+      if(msg == 'initFinish'){
+        $('.side').fadeIn(2500, () =>{
+          this.birdAction = 'flyToTree'
+        })
+      }
+      if(msg == 'flyToTreeFinish'){
+        this.birdAction = 'stay';
+        $('.info-box').fadeIn(2000, () => {
+          $('.sec-start').animate({'opacity': 1}, 2000)
+        });
+      }
+      if(msg == 'flyAwayFinish'){
+        $('.side .plum').animate({width: 160}, 1200, () => {
+          this.showResult = true;
+          $('.sec-result').fadeIn();
+        });
+      }
     }
   },
   mounted() {
@@ -434,18 +469,19 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss" rel="stylesheet/scss">
   .side{
-    width: 27%;
+    width: 200px;
     height: 100%;
-    background: #eee;
     overflow: visible;
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 0;
     z-index: 2;
+    display: none;
     .plum{
-      width: 130%;
+      width: 150%;
       height: 100%;
       background-size: contain;
+      background-position: -20px 0;
     }
     .info-box{
       position: absolute;
@@ -455,14 +491,49 @@ export default {
       border: 1px solid #666;
       color: #777;
       padding: 6px 8px;
+      width: 100px;
+      display: none;
       p{
         margin: 3px;
         font-size: 14px;
       }
+      .hour-points{
+        width: 40px;
+        display: inline-block;
+        line-height: 4px;
+        i{
+          width: 4px;
+          height: 4px;
+          background: #555;
+          display: inline-block;
+          margin-left: 2px;
+          border-radius: 100%;
+        }
+      }
     }
   }
-  .v-container{
-    height: 100%;
+  .canvas{
+    background-repeat: repeat-x;
+    background-size: 100px 100%;
+    position: relative;
+    &:before{
+      content: "";  
+      width: 100%;
+      height: 1px;
+      position: absolute;
+      top: -10px;
+      left: 0;
+      background: #ddd; 
+    }
+    &:after{
+      content: "";  
+      width: 100%;
+      height: 1px;
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      background: #ddd; 
+    }
   }
   section.sec-start{
     width: 100%;
@@ -470,6 +541,9 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    opacity: 0;
+    position: absolute;
+    z-index: 10;
     .step-1{
       width: 60%;
       display: flex;
@@ -505,7 +579,7 @@ export default {
       border-bottom: 1px solid transparent;
     }
     input:focus{
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #666;
       color: #666;
     }
     input::-webkit-outer-spin-button,
@@ -516,7 +590,7 @@ export default {
         -moz-appearance: textfield;
     }
     .q{
-      color: red;
+      color: darkred;
       font-size: 24px;
       cursor: pointer;
       display: inline-block;
@@ -536,22 +610,17 @@ export default {
   section.sec-result{
     overflow: hidden;
     height: 100%;
-    padding-left: 27%;
+    width: 100%;
+    position: absolute;
+    z-index: 10;
     .row-top, .row-bot{
-      background: #333;
-      width: 73%;
       position: absolute;
       z-index: 1;
-      left: 27%;
     }
     .row-top{
       top: 0;
     }
-    .row-bot{
-      bottom: 0;
-    }
     .row-mid{
-      background: #fff;
       width: 100%;
       height: 100%;
     }
@@ -560,17 +629,13 @@ export default {
       width: 33.3333333%;
       margin: 0;
       height: 100%;
+      position: relative;
     }
     .g-grid {
       position: relative;
       height: 50%;
-      border: 1px solid #aaa;
-      box-sizing: border-box;
     }
     .g-grid img{
-      position: absolute;
-      width: 30%;
-      left: 35%;
       display: inline-block;
     }
     .g-grid .name{
@@ -584,13 +649,17 @@ export default {
       margin: 0;
       z-index: 2;
       font-weight: bold;
+      display: none;
     }
     .body-mark{
       display: none;
     }
     .grid-up{
       img{
-        bottom: 20px;
+        position: absolute;
+        width: 30%;
+        left: 35%;
+        bottom: 8px;
       }
       .name{
         top: 50px;
@@ -598,10 +667,19 @@ export default {
     }
     .grid-down{
       img{
-        top: 20px;
+        position: relative;
+        width: 30%;
+        top: 8px;
       }
       .name{
         bottom: 50px;
+      }
+      .ele{
+        width: 100%;
+        margin-top: 15px;
+        span{
+          color: #666;
+        }
       }
     }
     .g-grid.c-green .name{
@@ -621,23 +699,26 @@ export default {
     }
     .row-top{
       overflow: hidden;
-      height: 24px;
-      line-height: 24px;
+      height: 60px;
+      right: 25px;
+      width: 100%;
+      text-align: right;
       .ele{
-        width: 20%;
-        float: left;
+        height: 60px;
+        line-height: 60px;
+        width: 24px;
         text-align: center;
-        height: 24px;
-        line-height: 24px;
+        display: inline-block;
+        cursor: pointer;
         span{
           display: block;
-          color: #fff;
-          /* padding: 5px 10px; */
-
+          color: #666;
+          padding: 0 12px;
         }
       }
     }
     .row-bot{
+      width: 100%;
       overflow: hidden;
       .ele{
         width: 33.3333%;
@@ -651,6 +732,11 @@ export default {
           /* padding: 5px 10px; */
 
         }
+      }
+    }
+    .bird{
+      .pic{
+
       }
     }
   }
