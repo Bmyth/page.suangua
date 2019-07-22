@@ -39,12 +39,14 @@
       <div class="row-mid">
         <div class="column">
           <div class="g-grid grid-up" :class="gColorClass(baseG[0])">
-            <p class="name">{{gName(baseG[0])}}<span v-show="bodyUp" class="body-mark"></span></p>
-            <img :src="gImg(baseG[0])">
+            <div class="img-box"><img :src="gImg(baseG[0])"></div>
           </div>
           <div class="g-grid grid-down" :class="gColorClass(baseG[1])">
-            <p class="name">{{gName(baseG[1])}}<span v-show="!bodyUp" class="body-mark"></span></p>
-            <img :src="gImg(baseG[1])">
+            <div class="img-box"><img :src="gImg(baseG[1])"></div>
+            <div class="spot">
+              <i class="ele-spot" :class="`ele-${getX(baseG[0])}`"></i>
+              <i class="ele-spot" :class="`ele-${getX(baseG[1])}`"></i>
+            </div>
             <div class="ele">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
@@ -58,12 +60,14 @@
 
          <div class="column">
           <div class="g-grid grid-up" :class="gColorClass(nextG[0])">
-            <p class="name">{{gName(nextG[0])}}</p>
-            <img :src="gImg(nextG[0])">
+            <div class="img-box"><img :src="gImg(nextG[0])"></div>
           </div>
           <div class="g-grid grid-down" :class="gColorClass(nextG[1])">
-            <p class="name">{{gName(nextG[1])}}</p>
-            <img :src="gImg(nextG[1])">
+            <div class="img-box"><img :src="gImg(nextG[1])"></div>
+            <div class="spot">
+              <i class="ele-spot" :class="`ele-${getX(nextG[0])}`"></i>
+              <i class="ele-spot" :class="`ele-${getX(nextG[1])}`"></i>
+            </div>
             <div class="ele">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
@@ -77,12 +81,14 @@
 
          <div class="column">
           <div class="g-grid grid-up" :class="gColorClass(futureG[0])">
-            <p class="name">{{gName(futureG[0])}}</p>
-            <img :src="gImg(futureG[0])">
+            <div class="img-box"><img :src="gImg(futureG[0])"></div>
           </div>
           <div class="g-grid grid-down" :class="gColorClass(futureG[1])">
-            <p class="name">{{gName(futureG[1])}}</p>
-            <img :src="gImg(futureG[1])">
+            <div class="img-box"><img :src="gImg(futureG[1])"></div>
+            <div class="spot">
+              <i class="ele-spot" :class="`ele-${getX(futureG[0])}`"></i>
+              <i class="ele-spot" :class="`ele-${getX(futureG[1])}`"></i>
+            </div>
             <div class="ele">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
@@ -100,7 +106,7 @@
         <div class="ele">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <span dark v-on="on">金</span>
+              <span dark v-on="on"><i class="ele-spot ele-m"></i>金</span>
             </template>
             <div>
               <p>{{xText('M', 'sw')}}</p>
@@ -113,7 +119,7 @@
         <div class="ele">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <span dark v-on="on">木</span>
+              <span dark v-on="on"><i class="ele-spot ele-wo"></i>木</span>
             </template>
             <div>
               <p>{{xText('Wo', 'sw')}}</p>
@@ -126,7 +132,7 @@
         <div class="ele">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <span dark v-on="on">水</span>
+              <span dark v-on="on"><i class="ele-spot ele-w"></i>水</span>
             </template>
             <div>
               <p>{{xText('W', 'sw')}}</p>
@@ -139,7 +145,7 @@
         <div class="ele">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <span dark v-on="on">火</span>
+              <span dark v-on="on"><i class="ele-spot ele-f"></i>火</span>
             </template>
             <div>
               <p>{{xText('F', 'sw')}}</p>
@@ -152,7 +158,7 @@
         <div class="ele">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <span dark v-on="on">土</span>
+              <span dark v-on="on"><i class="ele-spot ele-e"></i>土</span>
             </template>
             <div>
               <p>{{xText('E', 'sw')}}</p>
@@ -284,7 +290,7 @@ export default {
         $('.sec-start').addClass('bright');
         this.calculate();
       })
-      $('.info-box').fadeOut();
+      // $('.info-box').fadeOut();
     },
     calculate(){
       this.upNum = this.upNum % 8 || 8;
@@ -336,9 +342,9 @@ export default {
     changeY(i){
       return i == 6 ? 9 : 6;
     },
-    gName(n){
+    getX(n){
       if(n != null){
-        return this.G[n-1].name + this.xName(this.G[n-1].x);
+        return this.G[n-1].x.toLocaleLowerCase();
       }
     },
     gColorClass(n){
@@ -430,9 +436,9 @@ export default {
         });
       }
       if(msg == 'flyAwayFinish'){
-        $('.side .plum').animate({width: 160}, 1200, () => {
+        $('.side .plum').animate({width: 140}, 1000, () => {
           this.showResult = true;
-          $('.sec-result').fadeIn();
+          $('.sec-result').fadeIn(2000);
         });
       }
     }
@@ -488,8 +494,8 @@ export default {
       left: 15px;
       bottom: 15px;
       text-align: left;
-      border: 1px solid #666;
-      color: #777;
+      border: 1px solid #888;
+      color: #666;
       padding: 6px 8px;
       width: 100px;
       display: none;
@@ -519,7 +525,7 @@ export default {
     &:before{
       content: "";  
       width: 100%;
-      height: 1px;
+      height: 3px;
       position: absolute;
       top: -10px;
       left: 0;
@@ -528,7 +534,7 @@ export default {
     &:after{
       content: "";  
       width: 100%;
-      height: 1px;
+      height: 3px;
       position: absolute;
       bottom: -10px;
       left: 0;
@@ -546,24 +552,26 @@ export default {
     z-index: 10;
     .step-1{
       width: 60%;
+      min-width: 320px;
       display: flex;
       justify-content: center;
       position: relative;
     }
     .input-box{
-      width: 20%;
+      width: 25%;
       margin: 15px 0;
       color: #aaa;
       position: relative;
       display: inline-block;
       span{
-        font-size: 14px;
-        color: #888;
+        font-size: 16px;
+        color: #666;
         display: block;
         width: 100%;
         position: absolute;
         top: 14px;
         text-align: center;
+        cursor: pointer;
       }
     }
     input{
@@ -594,7 +602,7 @@ export default {
       font-size: 24px;
       cursor: pointer;
       display: inline-block;
-      padding: 25px 0;
+      padding: 30px 0;
       width: 0;
       opacity: 0;
       transition: all .5s;
@@ -635,41 +643,49 @@ export default {
       position: relative;
       height: 50%;
     }
-    .g-grid img{
-      display: inline-block;
-    }
-    .g-grid .name{
-      position: absolute;
-      left: 0;
-      font-size: 20px;
-      padding: 1px 5px;
-      color: #444;
+    .g-grid .img-box{
       text-align: center;
-      width: 100%;
-      margin: 0;
-      z-index: 2;
-      font-weight: bold;
-      display: none;
+      line-height: 1;
+      img{
+        display: inline-block;
+        width: 80px;
+        margin-top: 12px;
+      }
+    }
+    .g-grid .spot{
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 20px;
+      height: 50px;
+      i{
+        float: left;
+        position: relative;
+        left: -42px;
+        top: 82px;
+        margin-bottom: 4px;
+        margin-right: 10px;
+        width: 10px;
+        height: 10px;
+      }
     }
     .body-mark{
       display: none;
     }
     .grid-up{
-      img{
+      .img-box{
         position: absolute;
-        width: 30%;
-        left: 35%;
-        bottom: 8px;
+        bottom: 0;
+        width: 100%;
       }
       .name{
         top: 50px;
       }
     }
     .grid-down{
-      img{
+      .img-box{
+        width: 100%;
         position: relative;
-        width: 30%;
-        top: 8px;
       }
       .name{
         bottom: 50px;
@@ -679,6 +695,7 @@ export default {
         margin-top: 15px;
         span{
           color: #666;
+          cursor: pointer;
         }
       }
     }
@@ -697,6 +714,27 @@ export default {
     .g-grid.c-yellow .name{
       color: rgb(206, 138, 50);
     }
+    .ele-spot{
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-radius: 100%;
+      &.ele-m{
+        background: #f5c500;
+      }
+      &.ele-wo{
+        background: #08ce37;
+      }
+      &.ele-w{
+        background: #31649c;
+      }
+      &.ele-f{
+        background: #e81616;
+      }
+      &.ele-e{
+        background: #927602;
+      }
+    }
     .row-top{
       overflow: hidden;
       height: 60px;
@@ -706,37 +744,20 @@ export default {
       .ele{
         height: 60px;
         line-height: 60px;
-        width: 24px;
+        width: 30px;
         text-align: center;
         display: inline-block;
         cursor: pointer;
+        .ele-spot{
+          position: relative;
+          left: 0;
+          top: 16px;
+        }
         span{
           display: block;
           color: #666;
           padding: 0 12px;
         }
-      }
-    }
-    .row-bot{
-      width: 100%;
-      overflow: hidden;
-      .ele{
-        width: 33.3333%;
-        float: left;
-        text-align: center;
-        height: 24px;
-        line-height: 24px;
-        span{
-          display: block;
-          color: #fff;
-          /* padding: 5px 10px; */
-
-        }
-      }
-    }
-    .bird{
-      .pic{
-
       }
     }
   }
