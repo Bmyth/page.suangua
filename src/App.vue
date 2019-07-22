@@ -24,7 +24,7 @@ html, body{
 
 .v-tooltip__content{
   background: transparent !important;
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 .v-tooltip__content p, .v-tooltip__content span{

@@ -641,7 +641,12 @@ export default {
     }
     .g-grid {
       position: relative;
-      height: 50%;
+    }
+    .g-grid.grid-up{
+      height: 47%;
+    }
+    .g-grid.grid-down{
+      height: 53%;
     }
     .g-grid .img-box{
       text-align: center;
