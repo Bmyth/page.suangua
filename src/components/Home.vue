@@ -491,16 +491,16 @@ export default {
     }
     .info-box{
       position: absolute;
-      left: 15px;
-      bottom: 15px;
+      left: 12px;
+      bottom: 12px;
       text-align: left;
       border: 1px solid #888;
       color: #666;
-      padding: 6px 8px;
-      width: 100px;
+      padding: 4px 6px;
+      width: 90px;
       display: none;
       p{
-        margin: 3px;
+        margin: 2px;
         font-size: 14px;
       }
       .hour-points{
