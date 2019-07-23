@@ -2,19 +2,17 @@
  <div class="canvas" :style="{backgroundImage:`url(${bgImg})`, height: `${canvasHeight()}`, marginTop: `${canvasTop()}`}">
     <Bird :action="birdAction" @callback="birdCallback"></Bird>
 
-    <div class="side">
-      <div class="plum" :style="{backgroundImage:`url(${plumImg})`}"></div>
-      <div class="info-box">
-        <p v-show="lunarYear">{{lunarYear}}年</p>
-        <p>{{lunarCalendar}}</p>
-        <p>{{solarTerms}}</p> 
-        <p>
-          {{getHourNum().name}}时
-          <span class="hour-points">
-            <i v-for="i in getHourNum().num"></i>
-          </span>
-        </p> 
-      </div>
+    <div class="plum" :style="{backgroundImage:`url(${plumImg})`}"></div>
+    <div class="info-box">
+      <p v-show="lunarYear">{{lunarYear}}年</p>
+      <p>{{lunarCalendar}}</p>
+      <p>{{solarTerms}}</p> 
+      <p>
+        {{getHourNum().name}}时
+        <span class="hour-points">
+          <i v-for="i in getHourNum().num"></i>
+        </span>
+      </p> 
     </div>
 
     <section class="sec-start">
@@ -425,7 +423,7 @@ export default {
     },
     birdCallback(msg){
       if(msg == 'initFinish'){
-        $('.side').fadeIn(2500, () =>{
+        $('.plum').fadeIn(2500, () =>{
           this.birdAction = 'flyToTree'
         })
       }
@@ -436,9 +434,12 @@ export default {
         });
       }
       if(msg == 'flyAwayFinish'){
-        $('.side .plum').animate({width: 140}, 1000, () => {
+        $('.plum').animate({width: 140}, 1000, () => {
           this.showResult = true;
           $('.sec-result').fadeIn(2000);
+        });
+        $('.info-box').fadeOut(()=>{
+          $('.info-box').addClass('mini').fadeIn();
         });
       }
     }
@@ -474,47 +475,46 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss" rel="stylesheet/scss">
-  .side{
-    width: 200px;
-    height: 100%;
-    overflow: visible;
+  .plum{
+    width: 300px;
+    height: 204px;
+    background-size: contain;
+    background-position: -20px 0;
     position: absolute;
-    left: 0;
     top: 0;
-    z-index: 2;
+    left: 0;
+  }
+  .info-box{
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    text-align: left;
+    color: #666;
+    padding: 4px 6px;
+    width: 90px;
     display: none;
-    .plum{
-      width: 150%;
-      height: 100%;
-      background-size: contain;
-      background-position: -20px 0;
-    }
-    .info-box{
-      position: absolute;
-      left: 12px;
-      bottom: 12px;
-      text-align: left;
-      border: 1px solid #888;
-      color: #666;
-      padding: 4px 6px;
-      width: 90px;
-      display: none;
+    &.mini{
+      width: 290px;
       p{
-        margin: 2px;
-        font-size: 14px;
-      }
-      .hour-points{
-        width: 40px;
         display: inline-block;
-        line-height: 4px;
-        i{
-          width: 4px;
-          height: 4px;
-          background: #555;
-          display: inline-block;
-          margin-left: 2px;
-          border-radius: 100%;
-        }
+        margin-right: 10px;
+      }
+    }
+    p{
+      margin: 2px;
+      font-size: 14px;
+    }
+    .hour-points{
+      width: 40px;
+      display: inline-block;
+      line-height: 4px;
+      i{
+        width: 4px;
+        height: 4px;
+        background: #555;
+        display: inline-block;
+        margin-left: 2px;
+        border-radius: 100%;
       }
     }
   }
@@ -548,8 +548,6 @@ export default {
     justify-content: center;
     align-items: center;
     opacity: 0;
-    position: absolute;
-    z-index: 10;
     .step-1{
       width: 60%;
       min-width: 320px;
@@ -577,6 +575,7 @@ export default {
     input{
       display: inline-block;
       width: 100%;
+      max-width: 80px;
       font-size: 32px;
       color: #888;
       border: none;
@@ -587,7 +586,7 @@ export default {
       border-bottom: 1px solid transparent;
     }
     input:focus{
-      border-bottom: 1px solid #666;
+      border-bottom: 1px solid #777;
       color: #666;
     }
     input::-webkit-outer-spin-button,
@@ -619,8 +618,6 @@ export default {
     overflow: hidden;
     height: 100%;
     width: 100%;
-    position: absolute;
-    z-index: 10;
     .row-top, .row-bot{
       position: absolute;
       z-index: 1;
