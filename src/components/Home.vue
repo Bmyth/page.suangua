@@ -469,6 +469,13 @@ export default {
         $(this).closest('.input-box').find('span').animate({'top':'0'});
       }
     })
+
+    let h = (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) * 0.8;
+    let htop = 204;
+    let hbottom = 114;
+    let hmid = h - htop - hbottom;
+    let mt =  (h - htop - hbottom) * 0.5 + htop - hmid;
+    $('.step-1').css({height: hmid + 'px', 'top': htop + 'px'});
   }
 }
 </script>
@@ -544,13 +551,9 @@ export default {
   section.sec-start{
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     opacity: 0;
     .step-1{
-      width: 60%;
-      min-width: 320px;
+      width: 100%;
       display: flex;
       justify-content: center;
       position: relative;
