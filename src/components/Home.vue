@@ -3,7 +3,7 @@
     <Bird :action="birdAction" @callback="birdCallback"></Bird>
 
     <div class="plum" :style="{backgroundImage:`url(${plumImg})`}"></div>
-    <div class="info-box">
+    <div class="info-box" v-show="!onInput">
       <p v-show="lunarYear">{{lunarYear}}年</p>
       <p>{{lunarCalendar}}</p>
       <p>{{solarTerms}}</p> 
@@ -192,6 +192,7 @@ export default {
       selectElement: 'E',
       showGuaDlg: false,
       selectGua: '',
+      onInput: false,
       G2Y: [
         {g:1, y: [9,9,9]},
         {g:2, y: [6,9,9]},
@@ -460,11 +461,13 @@ export default {
     })
 
     $('.step-1 .input-box input').focus(function(){
+      _this.onInput = true;
       var t = $(this).closest('.input-box').find('span');
       $(t).animate({'top':'95px'})
     })
 
     $('.step-1 .input-box input').blur(function(){
+      _this.onInput = false;
       if($(this).val() == ''){
         $(this).closest('.input-box').find('span').animate({'top':'0'});
       }
