@@ -161,6 +161,7 @@ export default {
       font-size: 18px;
       color: #666;
       cursor: pointer;
+      z-index: 11;
     }
     .back{
       position: absolute;
@@ -170,6 +171,7 @@ export default {
       font-size: 18px;
       color: #666;
       cursor: pointer;
+      z-index: 11;
     }
     .content-page{
 
