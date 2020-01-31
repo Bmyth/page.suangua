@@ -1,12 +1,15 @@
 <template>
  <div class="canvas" :style="{backgroundImage:`url(${bgImg})`, height: `${canvasHeight()}`, marginTop: `${canvasTop()}`}">
     <Bird :action="birdAction" @callback="birdCallback"></Bird>
-
+    <Search :show="search" @hide="hideSearch"></Search>
     <div class="plum" :style="{backgroundImage:`url(${plumImg})`}"></div>
-    <div class="info-box" v-show="!onInput">
+    <div class="info-box">
       <p v-show="lunarYear">{{lunarYear}}年</p>
       <p>{{lunarCalendar}}</p>
       <p>{{solarTerms}}</p> 
+      <p>{{getLunarMonthInfo()}}</p>
+      <p>{{tgdz.tiangan}}{{tgdz.dizhi}}日</p>
+      <p>旬空 {{getXunkong()}}</p>
       <p>
         {{getHourNum().name}}时
         <span class="hour-points">
@@ -14,22 +17,34 @@
         </span>
       </p> 
     </div>
+    <p class="search" @click="showSearch">？</p>
 
     <section class="sec-start">
       <div class="step-1">
-        <div class="input-box box-up" :class="activeNumUp">
+        <div class="input-box box-up" :class="activeNumUp" @click="onInput('up')">
           <span>上卦</span>
-          <input v-model="upNum" type="number"></input>
+          <i>{{upNum}}</i>
         </div>
-        <div class="input-box box-down" :class="activeNumDown">
+        <div class="input-box box-down" :class="activeNumDown" @click="onInput('down')">
           <span>下卦</span>
-          <input v-model="downNum" type="number"></input>
+          <i>{{downNum}}</i>
         </div>
-        <div class="input-box box-change" :class="activeNumChange">
+        <div class="input-box box-change" :class="activeNumChange" @click="onInput('change')">
           <span>动爻</span>
-          <input v-model="changeNum" type="number"></input>
+          <i>{{changeNum}}</i>
         </div>
         <p class="q" @click="start" :class="numFilled">起</p>
+        <div class="input-numbers" v-show="onInputItem != ''" :class="activeNumChange">
+          <p @click="onNumberSet(1)">壹</p>
+          <p @click="onNumberSet(2)">贰</p>
+          <p @click="onNumberSet(3)">叁</p>
+          <p @click="onNumberSet(4)">肆</p>
+          <p @click="onNumberSet(5)">伍</p>
+          <p @click="onNumberSet(6)">陆</p>
+          <p @click="onNumberSet(7)" v-show="onInputItem != 'change'">柒</p>
+          <p @click="onNumberSet(8)" v-show="onInputItem != 'change'">捌</p>
+          <p></p>
+        </div>
       </div>
     </section>
 
@@ -172,17 +187,21 @@
 </template>
 
 <script>
+import B from '../knowledge/basic.js'
 import G64 from '../knowledge/gua64.js'
+import TGDZ from '../knowledge/tiangandizhi.js'
 import $ from 'jquery'
 import Bird from './Bird'
+import Search from './Search'
 export default {
   name: 'Home',
   components: {
-    Bird, Bird
+    Bird, Search
   },
   data () {
     return {
       lunarYear: '',
+      tgdz: {},
       solarTerms: '',
       lunarCalendar: '',
       upNum: '',
@@ -192,61 +211,6 @@ export default {
       selectElement: 'E',
       showGuaDlg: false,
       selectGua: '',
-      onInput: false,
-      G2Y: [
-        {g:1, y: [9,9,9]},
-        {g:2, y: [6,9,9]},
-        {g:3, y: [9,6,9]},
-        {g:4, y: [6,6,9]},
-        {g:5, y: [9,9,6]},
-        {g:6, y: [6,9,6]},
-        {g:7, y: [9,6,6]},
-        {g:8, y: [6,6,6]},
-      ],
-      G: [
-        {name:'乾', color:'white', x:'M'},
-        {name:'兑', color:'white', x:'M'},
-        {name:'离', color:'red', x:'F'},
-        {name:'震', color:'green', x:'Wo'},
-        {name:'巽', color:'green', x:'Wo'},
-        {name:'坎', color:'black', x:'W'},
-        {name:'艮', color:'yellow', x:'E'},
-        {name:'坤', color:'yellow', x:'E'}
-      ],
-      X: [
-        {key: 'M', name: '金', sw: 'E', kw: 'F', ws: 'W', wk: 'Wo'},
-        {key: 'Wo', name: '木', sw: 'W', kw: 'M', ws: 'F', wk: 'E'},
-        {key: 'W', name: '水', sw: 'M', kw: 'E', ws: 'Wo', wk: 'F'},
-        {key: 'F', name: '火', sw: 'Wo', kw: 'W', ws: 'E', wk: 'M'},
-        {key: 'E', name: '土', sw: 'F', kw: 'Wo', ws: 'M', wk: 'W'}
-      ],
-      H: [
-        { h: 0, name: '子', num: 1},
-        { h: 1, name: '丑', num: 2},
-        { h: 2, name: '丑', num: 2},
-        { h: 3, name: '寅', num: 3},
-        { h: 4, name: '寅', num: 3},
-        { h: 5, name: '卯', num: 4},
-        { h: 6, name: '卯', num: 4},
-        { h: 7, name: '辰', num: 5},
-        { h: 8, name: '辰', num: 5},
-        { h: 9, name: '巳', num: 6},
-        { h: 10, name: '巳', num: 6},
-        { h: 11, name: '午', num: 7},
-        { h: 12, name: '午', num: 7},
-        { h: 13, name: '未', num: 8},
-        { h: 14, name: '未', num: 8},
-        { h: 15, name: '申', num: 9},
-        { h: 16, name: '申', num: 9},
-        { h: 17, name: '酉', num: 10},
-        { h: 18, name: '酉', num: 10},
-        { h: 19, name: '戌', num: 11},
-        { h: 20, name: '戌', num: 11},
-        { h: 21, name: '亥', num: 12},
-        { h: 22, name: '亥', num: 12},
-        { h: 23, name: '子', num: 1},
-        { h: 24, name: '子', num: 1},
-      ],
       baseG: [],
       nextG: [],
       futureG: [],
@@ -254,7 +218,9 @@ export default {
       showResult: false,
       plumImg: require("../assets/plum.png"),
       bgImg: require("../assets/bg-small.png"),
-      birdAction: ''
+      birdAction: '',
+      onInputItem: '',
+      search: false
     }
   },
   computed: {
@@ -262,13 +228,13 @@ export default {
       return (this.upNum != '' && this.downNum != '' && this.changeNum != '') ? 'c-show' : ''
     },
     activeNumUp(){
-      return this.upNum != '' ? 'active' : ''
+      return this.onInputItem == 'up' ? 'active' : '';
     },
     activeNumDown(){
-      return this.downNum != '' ? 'active' : ''
+      return this.onInputItem == 'down' ? 'active' : '';
     },
     activeNumChange(){
-      return this.changeNum != '' ? 'active' : ''
+      return this.onInputItem == 'change' ? 'active' : '';
     },
     bodyUp(){
       return this.changeNum <= 3;
@@ -289,18 +255,17 @@ export default {
         $('.sec-start').addClass('bright');
         this.calculate();
       })
-      // $('.info-box').fadeOut();
     },
     calculate(){
       this.upNum = this.upNum % 8 || 8;
       this.downNum = this.downNum % 8 || 8;
       this.changeNum = this.changeNum % 6 || 6;
-      this.baseG = this.getY(this.upNum).concat(this.getY(this.downNum));
-      this.futureG = this.getFutureG();
-      this.nextG = this.getNextG();
-      this.baseG = this.getGFromY(this.baseG);
-      this.nextG = this.getGFromY(this.nextG);
-      this.futureG = this.getGFromY(this.futureG);
+      this.baseG = B.getY(this.upNum).concat(B.getY(this.downNum));
+      this.futureG = B.getFutureG(this.baseG, this.changeNum);
+      this.nextG = B.getNextG(this.baseG);
+      this.baseG = B.getGFromY(this.baseG);
+      this.nextG = B.getGFromY(this.nextG);
+      this.futureG = B.getGFromY(this.futureG);
       this.body = this.changeNum > 3 ? this.baseG[0] : this.baseG[1];
     },
     clear(){
@@ -310,45 +275,14 @@ export default {
         $('.step-1').fadeIn(800).css('display', 'flex');
       });
     },
-    getGFromY(Y){
-      let upY = [Y[0], Y[1], Y[2]]
-      let downY = [Y[3], Y[4], Y[5]]
-      let upG = this.G2Y.find((i) =>{
-        return i.y[0] == Y[0] && i.y[1] == Y[1] && i.y[2] == Y[2]
-      })
-      let downG = this.G2Y.find((i) =>{
-        return i.y[0] == Y[3] && i.y[1] == Y[4] && i.y[2] == Y[5]
-      })
-      return [upG.g, downG.g];
-    },
-    getFutureG(){
-      return this.baseG.map((i,index) => {
-        if(index == 6 - this.changeNum ){
-          return this.changeY(i);
-        }
-        return i;
-      })
-    },
-    getNextG(){
-      return [this.baseG[1], this.baseG[2], this.baseG[3], this.baseG[2], this.baseG[3], this.baseG[4]] 
-    },
-    getY(g){
-      let f = this.G2Y.find((i) => {
-        return i.g == g;
-      })
-      return f.y;
-    },
-    changeY(i){
-      return i == 6 ? 9 : 6;
-    },
     getX(n){
       if(n != null){
-        return this.G[n-1].x.toLocaleLowerCase();
+        return B.G[n-1].x.toLocaleLowerCase();
       }
     },
     gColorClass(n){
       if(n != null){
-        return 'c-' + this.G[n-1].color;
+        return 'c-' + B.G[n-1].color;
       }
     },
     gImg(n){
@@ -356,48 +290,11 @@ export default {
         return "./static/img/g" + n + ".png"
       }
     },
-    gWord(g){
-      if(g[0] && g[1]){
-        let key = g[0] + '' + g[1];
-        let gua = G64.find((g) => {return g.key == key});
-        return gua.name;
-      }
-    },
-    gWordMore(g){
-      if(g[0] && g[1]){
-        let key = g[0] + '' + g[1];
-        let gua = G64.find((g) => {return g.key == key});
-        return gua.word;
-      }
-    },
     xName(x){
-      if(x){
-        let i = this.X.find((i) => { return i.key == x})
-        if(i){
-          return i.name;
-        }
-      }
+      return B.xName(x);
     },
     xText(x, type){
-      if(x){
-        let i = this.X.find((i) => {return i.key == x});
-        let iName = i.name;
-        let ox = i[type];
-        let o = this.X.find((i) => {return i.key == ox});
-        let oName = o.name;
-        if(type == 'ws'){
-          return iName + '生' + oName;
-        }
-        if(type == 'wk'){
-          return iName + '克' + oName;
-        }
-        if(type == 'sw'){
-          return oName + '生' + iName;
-        }
-        if(type == 'kw'){
-          return oName + '克' + iName;
-        }
-      }
+      return B.xText(x, type);
     },
     getDateStr(){
       let date = new Date();
@@ -409,36 +306,68 @@ export default {
       day = day >= 10 ? '' + day : '0' + day;
       return str + day;
     },
+    getXunkong(){
+      if(this.tgdz.round && this.tgdz.round.miss){
+        return this.tgdz.round.miss[0] + this.tgdz.round.miss[1];
+      }
+    },
+    getLunarMonthInfo(){
+      if(this.lunarMonth && this.lunarMonth.month){
+        return this.lunarMonth.month + '月' + B.xName(this.lunarMonth.x) + '旺';
+      }
+    },
     getHourNum(){
-      let hour = new Date().getHours();
-      let h = this.H.find((i) => {return i.h == hour})
-      return h
+      return B.getHourNum();
+    },
+    gWord(g){
+      return G64.gWord(g);
+    },
+    gWordMore(g){
+      return G64.gWordMore(g);
     },
     checkElement(n){
-      this.selectElement = this.G[n-1].x;
+      this.selectElement = B.G[n-1].x;
       this.showElementDlg = true;
     },
     checkGua(g){
       this.selectGua = g;
       this.showGuaDlg = true;
     },
+    onInput(type){
+      this.onInputItem = type;
+    },
+    onNumberSet(number){
+      if(this.onInputItem == 'up'){
+        this.upNum = number;
+      }
+      if(this.onInputItem == 'down'){
+        this.downNum = number;
+      }
+      if(this.onInputItem == 'change'){
+        this.changeNum = number;
+      }
+      this.onInputItem = '';
+    },
+    showSearch(){
+      this.search = true;
+    },
+    hideSearch(){
+      this.search = false;
+    },
     birdCallback(msg){
       if(msg == 'initFinish'){
         $('.plum').fadeIn(2500, () =>{
           this.birdAction = 'flyToTree'
         })
+        $('.sec-start').animate({'opacity': 1}, 2000)
+        $('.info-box').fadeIn(1000);
       }
       if(msg == 'flyToTreeFinish'){
         this.birdAction = 'stay';
-        $('.info-box').fadeIn(2000, () => {
-          $('.sec-start').animate({'opacity': 1}, 2000)
-        });
       }
       if(msg == 'flyAwayFinish'){
-        $('.plum').animate({width: 140}, 1000, () => {
-          this.showResult = true;
-          $('.sec-result').fadeIn(2000);
-        });
+        this.showResult = true;
+        $('.sec-result').fadeIn(1600);
         $('.info-box').fadeOut(()=>{
           $('.info-box').addClass('mini').fadeIn();
         });
@@ -447,35 +376,20 @@ export default {
   },
   mounted() {
     let _this = this;
-    this.$http.get('https://www.mxnzp.com/api/holiday/single/' + this.getDateStr()).then((res) =>{
+    this.tgdz = TGDZ.getTGDZ();
+    this.$http.get('https://www.mxnzp.com/api/holiday/single/' + this.getDateStr() + '?app_id=fyjtjlhqnadgqqkq&app_secret=aThBVzdhcVhoM1E1VHVsRFFLV1BsQT09').then((res) =>{
       if(res.data.data){
         let data = res.data.data;
         this.solarTerms = data.solarTerms;
         this.lunarYear = data.yearTips;
         this.lunarCalendar = data.lunarCalendar;
-      }
-    })
-
-    $('.step-1 .input-box').click(function(){
-      $(this).find('input').focus();
-    })
-
-    $('.step-1 .input-box input').focus(function(){
-      _this.onInput = true;
-      var t = $(this).closest('.input-box').find('span');
-      $(t).animate({'top':'95px'})
-    })
-
-    $('.step-1 .input-box input').blur(function(){
-      _this.onInput = false;
-      if($(this).val() == ''){
-        $(this).closest('.input-box').find('span').animate({'top':'0'});
+        this.lunarMonth = TGDZ.getMonth(this.solarTerms);
       }
     })
 
     let h = (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) * 0.8;
-    let htop = 204;
-    let hbottom = 114;
+    let htop = 100;
+    let hbottom = 164;
     let hmid = h - htop - hbottom;
     let mt =  (h - htop - hbottom) * 0.5 + htop - hmid;
     $('.step-1').css({height: hmid + 'px', 'top': htop + 'px'});
@@ -486,8 +400,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss" rel="stylesheet/scss">
   .plum{
-    width: 300px;
-    height: 204px;
+    width: 180px;
+    height: 100px;
     background-size: contain;
     background-position: -20px 0;
     position: absolute;
@@ -496,7 +410,7 @@ export default {
   }
   .info-box{
     position: absolute;
-    left: 12px;
+    left: 9px;
     bottom: 12px;
     text-align: left;
     color: #666;
@@ -528,6 +442,15 @@ export default {
       }
     }
   }
+  .search{
+    position: absolute;
+    top: 8px;
+    right: 4px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 5;
+    color: #666;
+  }
   .canvas{
     background-repeat: repeat-x;
     background-size: 100px 100%;
@@ -552,9 +475,10 @@ export default {
     }
   }
   section.sec-start{
-    width: 100%;
+    width: 75%;
     height: 100%;
     opacity: 0;
+    margin-left: 25%;
     .step-1{
       width: 100%;
       display: flex;
@@ -562,11 +486,12 @@ export default {
       position: relative;
     }
     .input-box{
-      width: 25%;
+      width: 20%;
       margin: 15px 0;
       color: #aaa;
       position: relative;
       display: inline-block;
+
       span{
         font-size: 16px;
         color: #666;
@@ -577,30 +502,20 @@ export default {
         text-align: center;
         cursor: pointer;
       }
-    }
-    input{
-      display: inline-block;
-      width: 100%;
-      max-width: 80px;
-      font-size: 32px;
-      color: #888;
-      border: none;
-      background: transparent;
-      outline: none;
-      padding: 10px 0;
-      text-align: center;
-      border-bottom: 1px solid transparent;
-    }
-    input:focus{
-      border-bottom: 1px solid #777;
-      color: #666;
-    }
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-    }
-    input[type="number"]{
-        -moz-appearance: textfield;
+      &.active span{
+        border: 1px solid #888;
+      }
+      i{
+        font-size: 22px;
+        /* display: block; */
+        position: absolute;
+        left: 0px;
+        top: 36px;
+        width: 100%;
+        text-align: center;
+        color: #666;
+        font-style: normal;
+      }
     }
     .q{
       color: darkred;
@@ -618,6 +533,28 @@ export default {
     .q.c-show{
       width: 10%;
       opacity: 1;
+    }
+    .input-numbers{
+      position: absolute;
+      top: 90px;
+      left:  15%;
+      width: 70%;
+      height: 100px;
+      z-index: 6;
+      &.active p{
+        width: 33.333%;
+      }
+      p{
+        cursor: pointer;
+        display: block;
+        width: 25%;
+        float: left;
+        margin: 0;
+        height: 50%;
+        text-align: center;
+        color: #555;
+        font-size: 18px;
+      }
     }
   }
   section.sec-result{
@@ -746,13 +683,13 @@ export default {
     .row-top{
       overflow: hidden;
       height: 60px;
-      right: 25px;
+      right: 36px;
       width: 100%;
       text-align: right;
       .ele{
         height: 60px;
         line-height: 60px;
-        width: 30px;
+        width: 25px;
         text-align: center;
         display: inline-block;
         cursor: pointer;
@@ -764,7 +701,7 @@ export default {
         span{
           display: block;
           color: #666;
-          padding: 0 12px;
+          padding: 0 8px;
         }
       }
     }

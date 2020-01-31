@@ -51,9 +51,9 @@ export default {
           y: this.screenH * 0.1, 
         },  
         end: { 
-          x:190,
-          y:this.screenH * 0.1 + 128, 
-          angle: 50, 
+          x:135,
+          y:this.screenH * 0.1 + 125, 
+          angle: 30, 
           length: 0.3
         }
       }
@@ -65,8 +65,8 @@ export default {
           y: 50, 
         },  
         end: { 
-          x:90,
-          y:this.screenH * 0.1 + 72, 
+          x:50,
+          y:this.screenH * 0.1 + 80, 
           angle: -30, 
           length: 0.2
         }
@@ -211,11 +211,12 @@ export default {
 <style scoped lang="scss" rel="stylesheet/scss">
   .bird{
     position: fixed;
-    z-index: 100;
+    z-index: 9;
     width: 45px;
     height: 60px;
     right: -100px;
     top: -100;
+    zoom: 0.65;
     .pic{
       width: 100%;
       height: 100%;

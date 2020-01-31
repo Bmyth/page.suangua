@@ -260,4 +260,22 @@ var g64 = [{
 	word: '未济。亨。小狐汔济，濡其尾，无攸利。'
 }]
 
-module.exports = g64;
+function gWord(g){
+  if(g[0] && g[1]){
+    let key = g[0] + '' + g[1];
+    let gua = g64.find((g) => {return g.key == key});
+    return gua.name;
+  }
+}
+function gWordMore(g){
+  if(g[0] && g[1]){
+    let key = g[0] + '' + g[1];
+    let gua = g64.find((g) => {return g.key == key});
+    return gua.word;
+  }
+}
+
+module.exports = {
+	gWord: gWord,
+	gWordMore: gWordMore
+};
