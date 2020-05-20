@@ -110,7 +110,7 @@ function getTGDZ(){
     var _yearNum = yearNum[year];
     var _monthNum = monthNum[month];
     var num = (_yearNum + _monthNum + day) % 60;
-    num = num - 1;
+    num = num == 0 ? 59 : num - 1;
     var _round = round[parseInt(num / 10)];
     var num = num % 10;
     return {
